@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recurring Date Picker</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    label { display: block; margin-top: 15px; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; }
+    .preview { margin-top: 20px; background: #f0f0f0; padding: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Recurring Date Picker (HTML + JS)</h1>
+
+  <label>Recurrence:</label>
+  <select id="recurrence">
+    <option value="daily">Daily</option>
+    <option value="weekly">Weekly</option>
+    <option value="monthly">Monthly</option>
+    <option value="yearly">Yearly</option>
+  </select>
+
+  <label>Every X units:</label>
+  <input type="number" id="interval" value="1" min="1" />
+
+  <label>Start Date:</label>
+  <input type="date" id="startDate" />
+
+  <label>End Date (optional):</label>
+  <input type="date" id="endDate" />
+
+  <button onclick="generateDates()">Generate Recurring Dates</button>
+
+  <div class="preview">
+    <h3>Recurring Dates:</h3>
+    <ul id="resultList"></ul>
+  </div>
+
+  <script>
+    function generateDates() {
+      const recurrence = document.getElementById("recurrence").value;
+      const interval = parseInt(document.getElementById("interval").value);
+      const startDate = new Date(document.getElementById("startDate").value);
+      const endDateInput = document.getElementById("endDate").value;
+      const endDate = endDateInput ? new Date(endDateInput) : null;
+
+      const resultList = document.getElementById("resultList");
+      resultList.innerHTML = "";
+
+      if (isNaN(startDate)) {
+        alert("Please select a valid start date.");
+        return;
+      }
+
+      const maxEnd = endDate || new Date(startDate.getFullYear() + 1, startDate.getMonth(), startDate.getDate());
+      let current = new Date(startDate);
+
+      while (current <= maxEnd) {
+        const li = document.createElement("li");
+        li.textContent = current.toDateString();
+        resultList.appendChild(li);
+
+        switch (recurrence) {
+          case "daily":
+            current.setDate(current.getDate() + interval);
+            break;
+          case "weekly":
+            current.setDate(current.getDate() + interval * 7);
+            break;
+          case "monthly":
+            current.setMonth(current.getMonth() + interval);
+            break;
+          case "yearly":
+            current.setFullYear(current.getFullYear() + interval);
+            break;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
